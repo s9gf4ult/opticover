@@ -1,6 +1,7 @@
 module Opticover.Types where
 
 import Control.Lens
+import Data.Set as S
 import Data.Text as T
 import Opticover.Ple
 
@@ -25,6 +26,11 @@ newtype Link = Link
 
 link :: Portal -> Portal -> Link
 link a b = Link $ unordPair a b
+
+linkPortals :: Link -> Set Portal
+linkPortals l =
+  let (a, b) = unPair $ unLink l
+  in S.fromList [a, b]
 
 -- | The field is unordered triple of links
 newtype Field = Field
