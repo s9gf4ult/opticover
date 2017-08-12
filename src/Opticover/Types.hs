@@ -1,6 +1,7 @@
 module Opticover.Types where
 
 import Control.Lens
+import Data.Map.Strict as M
 import Data.Set as S
 import Data.Text as T
 import Opticover.Ple
@@ -12,9 +13,15 @@ data Point = Point
 
 makeLenses ''Point
 
+newtype Vec = Vec
+  { unVec :: Point
+  } deriving (Eq)
+
+makePrisms ''Vec
+
 data Portal = Portal
   { _pCoord :: Point
-  , _pName :: Text
+  , _pName  :: Text
   } deriving (Eq, Ord)
 
 makeLenses ''Portal
@@ -39,3 +46,13 @@ newtype Field = Field
 
 field :: Link -> Link -> Link -> Field
 field a b c = Field $ unordTriple a b c
+
+fieldLinks :: Field -> [Link]
+fieldLinks f =
+  let (a, b, c) = unTriple $ unField f
+  in [a, b, c]
+
+fieldPortals :: Field -> Set Portal
+fieldPortals f = S.fromList $ fieldLinks f >>= (S.toList . linkPortals)
+
+type LinksMap = Map Portal [Link]

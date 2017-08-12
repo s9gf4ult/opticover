@@ -1,3 +1,5 @@
+-- | Unordered N-tuples
+
 module Opticover.Ple
   ( Pair
   , unPair
@@ -17,7 +19,6 @@ unordPair :: (Ord a) => a -> a -> Pair a
 unordPair a b =
   let [x,y] = L.sort [a,b]
   in Pair (x, y)
-
 
 newtype Triple a = Triple
   { unTriple :: (a, a, a)
