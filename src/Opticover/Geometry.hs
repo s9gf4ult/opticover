@@ -22,7 +22,7 @@ vecAngleSin v1 v2 = vecPerpProduct v1 v2 / (vecLen v1) / (vecLen v2)
 
 -- | Calculates square of triangle formed by two vectors
 vectorsSquare :: Vec -> Vec -> Double
-vectorsSquare v1 v2 = (vecLen v1) * (vecLen v2) * (vecAngleSin v1 v2) / 2
+vectorsSquare v1 v2 = abs $ (vecLen v1) * (vecLen v2) * (vecAngleSin v1 v2) / 2
 
 vecPerp :: Vec -> Vec
 vecPerp (Vec (Point x y)) = Vec $ Point (negate y) x
