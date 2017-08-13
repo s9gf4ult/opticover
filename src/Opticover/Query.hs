@@ -41,7 +41,13 @@ linksMap ls = M.fromListWith (++) $ ls >>= toPairs
       in [(a, [l]), (b, [l])]
 
 leftRightSplit :: Link -> [Portal] -> ([Portal], [Portal])
-leftRightSplit = error "FIXME: Not implemented: leftRightSplit"
+leftRightSplit l portals = L.partition leftPortal portals
+  where
+    leftPortal p =
+      let (a, b) = unPair $ unLink l
+          vec1 = portalVec a b
+          vec2 = portalVec a p
+      in vecPerpProduct vec1 vec2 > 0
 
 fieldSquare :: Field -> Double
 fieldSquare field =
