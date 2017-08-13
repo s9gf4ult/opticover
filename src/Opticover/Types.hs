@@ -9,27 +9,27 @@ import Opticover.Ple
 data Point = Point
   { _pX :: Double
   , _pY :: Double
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 makeLenses ''Point
 
 newtype Vec = Vec
   { unVec :: Point
-  } deriving (Eq)
+  } deriving (Eq, Ord, Show)
 
 makePrisms ''Vec
 
 data Portal = Portal
   { _pCoord :: Point
   , _pName  :: Text
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 makeLenses ''Portal
 
 -- | The link is unordered pair of portals
 newtype Link = Link
   { unLink :: Pair Portal
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 link :: Portal -> Portal -> Link
 link a b = Link $ unordPair a b
@@ -42,7 +42,7 @@ linkPortals l =
 -- | The field is unordered triple of links
 newtype Field = Field
   { unField :: Triple Link
-  } deriving (Eq, Ord)
+  } deriving (Eq, Ord, Show)
 
 field :: Link -> Link -> Link -> Field
 field a b c = Field $ unordTriple a b c
