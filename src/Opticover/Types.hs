@@ -19,9 +19,16 @@ newtype Vec = Vec
 
 makePrisms ''Vec
 
+data Line = Line
+  { _lBase      :: !Point
+  , _lDirection :: !Vec
+  } deriving (Eq, Ord, Show)
+
+makeLenses ''Line
+
 data Portal = Portal
-  { _pCoord :: Point
-  , _pName  :: Text
+  { _pCoord :: !Point
+  , _pName  :: !Text
   } deriving (Eq, Ord, Show)
 
 makeLenses ''Portal
