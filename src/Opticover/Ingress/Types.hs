@@ -1,30 +1,11 @@
-module Opticover.Types where
+module Opticover.Ingress.Types where
 
 import Control.Lens
 import Data.Map.Strict as M
 import Data.Set as S
 import Data.Text as T
+import Opticover.Geometry
 import Opticover.Ple
-
-data Point = Point
-  { _pX :: Double
-  , _pY :: Double
-  } deriving (Eq, Ord, Show)
-
-makeLenses ''Point
-
-newtype Vec = Vec
-  { unVec :: Point
-  } deriving (Eq, Ord, Show)
-
-makePrisms ''Vec
-
-data Line = Line
-  { _lBase      :: !Point
-  , _lDirection :: !Vec
-  } deriving (Eq, Ord, Show)
-
-makeLenses ''Line
 
 data Portal = Portal
   { _pCoord :: !Point

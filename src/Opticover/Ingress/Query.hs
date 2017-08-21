@@ -1,4 +1,4 @@
-module Opticover.Query where
+module Opticover.Ingress.Query where
 
 import Control.Lens
 import Control.Monad
@@ -8,8 +8,9 @@ import Data.Map.Strict as M
 import Data.Maybe
 import Data.Set as S
 import Opticover.Geometry
+import Opticover.Ingress.Calc
+import Opticover.Ingress.Types
 import Opticover.Ple
-import Opticover.Types
 
 queryLinkablePortals
   :: Portal
