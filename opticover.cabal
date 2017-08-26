@@ -27,6 +27,7 @@ library
                      , Opticover.Ple
   build-depends:       base >= 4.7 && < 5
                      , containers
+                     , ieee754
                      , lens
                      , text
   default-extensions:  DataKinds

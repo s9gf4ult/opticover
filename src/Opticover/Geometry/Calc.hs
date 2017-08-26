@@ -1,21 +1,32 @@
 module Opticover.Geometry.Calc where
 
-import Opticover.Geometry.Types
 import Control.Lens
+import Data.AEq
+import Opticover.Geometry.Types
+import Opticover.Ple
 
-
--- | Returns Nothing if lines are parallel
+-- | Returns Nothing if lines are collinear (or just almost collinear)
 lineCrossPoint :: Line -> Line -> Maybe Point
-lineCrossPoint = (error "FIXME: ")
+lineCrossPoint l1 l2 = if
+  | pp ~== 0 -> Nothing
+    -- Lines are collinear
+  | otherwise ->
+
+
 
 segment2line :: Segment -> Line
-segment2line (Segment orig dest) = Line orig (pointVec orig dest)
+segment2line (Segment pair) =
+  let (orig, dest) = unPair pair
+  in Line orig (pointVec orig dest)
 
 pointInBox :: Box -> Point -> Bool
-pointInBox = error "FIXME: Not implemented: pointInBox"
+pointInBox (Box pair) p =
+  let (p1, p2) = unPair pair
+  in p1 <= p && p <= p2
+  -- Hoping derived Ord instance do what we expect here
 
 segmentBorderBox :: Segment -> Box
-segmentBorderBox = error "FIXME: Not implemented: segmentBorderBox"
+segmentBorderBox (Segment pair) = Box pair
 
 segmentCross :: Segment -> Segment -> Bool
 segmentCross s1 s2 = case segment2line s1 `lineCrossPoint` segment2line s2 of
@@ -34,6 +45,13 @@ pointVec (Point bx by) (Point dx dy) = Vec $ Point (dx - bx) (dy - by)
 
 vecLen :: Vec -> Double
 vecLen (Vec (Point x y)) = sqrt $ (x ^ 2) + (y ^ 2)
+
+vecScale :: Vec -> Double -> Vec
+vecScale (Vec (Point a b)) scale = Vec $ Point (a * scale) (b * scale)
+
+-- | Normalizes vector to length 1
+vecNormalize :: Vec -> Vec
+vecNormalize v = vecScale v (1 / vecLen v)
 
 -- | Sin of angle between two vectors
 vecAngleSin :: Vec -> Vec -> Double

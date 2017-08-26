@@ -15,6 +15,9 @@ makeLenses ''Point
 -- | Box is an ordered pair of 2 points: low left corner and top right
 -- corner respectively
 newtype Box = Box (Pair Point)
+  deriving (Eq, Ord, Show)
+
+makePrisms ''Box
 
 newtype Vec = Vec
   { unVec :: Point
@@ -31,9 +34,7 @@ data Line = Line
 
 makeLenses ''Line
 
-data Segment = Segment
-  { _sOrigin      :: !Point
-  , _sDestination :: !Point
-  } deriving (Eq, Ord, Show)
+newtype Segment = Segment (Pair Point)
+  deriving (Eq, Ord, Show)
 
-makeLenses ''Segment
+makePrisms ''Segment
