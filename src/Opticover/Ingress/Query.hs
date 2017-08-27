@@ -22,17 +22,23 @@ queryLinkablePortals
   -> [Field]
   -- ^ List of all fields
   -> [Portal]
-queryLinkablePortals me allPortals allLinks allFields = do
-  portal <- allPortals
-  guard $ notLinked portal
-  guard $ noCross portal
-  return portal
+queryLinkablePortals me allPortals allLinks allFields =
+  if L.any (portalUnderField me) allFields then [] else linkable
   where
-    notLinked portal = link me portal `notElem` allLinks
-    noCross portal = L.null $ do
-      l <- allLinks
-      guard $ linksCross l $ link me portal
-      return l
+    linkable = do
+      portal <- allPortals
+      guard $ notLinked portal
+      guard $ noCross portal
+      return portal
+      where
+        notLinked portal = link me portal `notElem` allLinks
+        noCross portal = L.null $ do
+          l <- allLinks
+          guard $ linksCross l $ link me portal
+          return l
+
+portalUnderField :: Portal -> Field -> Bool
+portalUnderField = error "FIXME: Not implemented: portalUnderField"
 
 linksMap :: [Link] -> LinksMap
 linksMap ls = M.fromListWith (++) $ ls >>= toPairs
