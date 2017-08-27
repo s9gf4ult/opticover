@@ -25,16 +25,15 @@ newtype Vec = Vec
 
 makePrisms ''Vec
 
-data Line = Line
-  { _lBase      :: !Point
-  , _lDirection :: !Vec
-  -- ^ Direction vector, the length is not relevant, should be
-  -- normalized to 1.
+-- | Line in parametric coordinates
+newtype Line = Line
+  { unLine :: (Pair Point)
   } deriving (Eq, Ord, Show)
 
-makeLenses ''Line
+makePrisms ''Line
 
-newtype Segment = Segment (Pair Point)
-  deriving (Eq, Ord, Show)
+newtype Segment = Segment
+  { unSegment :: (Pair Point)
+  } deriving (Eq, Ord, Show)
 
 makePrisms ''Segment

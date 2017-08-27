@@ -2,22 +2,59 @@ module Opticover.Geometry.Calc where
 
 import Control.Lens
 import Data.AEq
+import Numeric.LinearAlgebra
 import Opticover.Geometry.Types
 import Opticover.Ple
 
--- | Returns Nothing if lines are collinear (or just almost collinear)
+-- | Returns Nothing if lines are parallel
 lineCrossPoint :: Line -> Line -> Maybe Point
 lineCrossPoint l1 l2 = if
   | pp ~== 0 -> Nothing
-    -- Lines are collinear
+    -- Lines are parallel
   | otherwise ->
+    let
+      (p1, p2) = unPair $ unLine l1
+      (p3, p4) = unPair $ unLine l2
+      det4 a b c d = det $ (2 >< 2) [a, b, c, d]
+      divider =
+        let
+          a = det4 (p1 ^. pX) 1
+                   (p2 ^. pX) 1
+          b = det4 (p1 ^. pY) 1
+                   (p2 ^. pY) 1
+          c = det4 (p3 ^. pX) 1
+                   (p4 ^. pX) 1
+          d = det4 (p3 ^. pY) 1
+                   (p4 ^. pY) 1
+        in det4 a b c d
+      -- l is either pX or pX
+      denomLen l =
+        let
+          a = det4 (p1 ^. pX) (p1 ^. pY)
+                   (p2 ^. pX) (p2 ^. pY)
+          b = det4 (p1 ^. l) 1
+                   (p2 ^. l) 1
+          c = det4 (p3 ^. pX) (p3 ^. pY)
+                   (p4 ^. pX) (p4 ^. pY)
+          d = det4 (p3 ^. l) 1
+                   (p4 ^. l) 1
+        in det4 a b c d
+      denomX = denomLen pX
+      denomY = denomLen pY
+    in Just $ Point (denomX / divider) (denomY / divider)
+  where
+    pp =
+      let vec1 = lineDirVec l1
+          vec2 = lineDirVec l2
+      in vecPerpProduct vec1 vec2
 
-
+lineDirVec :: Line -> Vec
+lineDirVec l =
+  let (a, b) = unPair $ unLine l
+  in pointVec a b
 
 segment2line :: Segment -> Line
-segment2line (Segment pair) =
-  let (orig, dest) = unPair pair
-  in Line orig (pointVec orig dest)
+segment2line (Segment pair) = Line pair
 
 pointInBox :: Box -> Point -> Bool
 pointInBox (Box pair) p =
@@ -41,7 +78,6 @@ pointVec
   -- ^ Vector destination
   -> Vec
 pointVec (Point bx by) (Point dx dy) = Vec $ Point (dx - bx) (dy - by)
-
 
 vecLen :: Vec -> Double
 vecLen (Vec (Point x y)) = sqrt $ (x ^ 2) + (y ^ 2)
