@@ -2,7 +2,6 @@ module Opticover.Geometry.Calc where
 
 import Control.Lens
 import Data.AEq
-import Numeric.LinearAlgebra
 import Opticover.Geometry.Types
 import Opticover.Ple
 
@@ -15,7 +14,7 @@ lineCrossPoint l1 l2 = if
     let
       (p1, p2) = unPair $ unLine l1
       (p3, p4) = unPair $ unLine l2
-      det4 a b c d = det $ (2 >< 2) [a, b, c, d]
+      det4 a b c d = (a*d) - (b*c)
       divider =
         let
           a = det4 (p1 ^. pX) 1
