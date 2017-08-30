@@ -36,6 +36,26 @@ case_pointInTriangle = do
     b = Point 1 0
     c = Point 0 1
     t = Triangle $ unordTriple a b c
+  -- on points
   True @=? pointInTriangle t a
-  -- True @=? pointInTriangle t b
-  -- True @=? pointInTriangle t c
+  True @=? pointInTriangle t b
+  True @=? pointInTriangle t c
+  -- on edges
+  True @=? pointInTriangle t (Point 0.5 0)
+  True @=? pointInTriangle t (Point 0 0.5)
+  True @=? pointInTriangle t (Point 0.5 0.5)
+  -- inside trialge
+  True @=? pointInTriangle t (Point 0.25 0.25)
+
+case_pointNotInTriangle :: Assertion
+case_pointNotInTriangle = do
+  let
+    a = Point 0 0
+    b = Point 1 0
+    c = Point 0 1
+    t = Triangle $ unordTriple a b c
+  False @=? pointInTriangle t (Point 1 1)
+  False @=? pointInTriangle t (Point 2 0)
+  False @=? pointInTriangle t (Point 0 2)
+  False @=? pointInTriangle t (Point 0.5 (-0.5))
+  False @=? pointInTriangle t (Point (-0.5) 0.5)
