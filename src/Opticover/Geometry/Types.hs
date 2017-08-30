@@ -1,5 +1,3 @@
--- |
-
 module Opticover.Geometry.Types where
 
 import Control.Lens
@@ -37,3 +35,10 @@ newtype Segment = Segment
   } deriving (Eq, Ord, Show)
 
 makePrisms ''Segment
+
+
+newtype Triangle = Triangle
+  { unTriangle :: Triple Point
+  } deriving (Eq, Ord, Show)
+
+makePrisms ''Triangle

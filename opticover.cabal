@@ -19,6 +19,10 @@ library
   exposed-modules:     Opticover
                      , Opticover.Geometry
                      , Opticover.Geometry.Calc
+                     , Opticover.Geometry.Calc.Box
+                     , Opticover.Geometry.Calc.Line
+                     , Opticover.Geometry.Calc.Triangle
+                     , Opticover.Geometry.Calc.Vec
                      , Opticover.Geometry.Types
                      , Opticover.Ingress
                      , Opticover.Ingress.Calc

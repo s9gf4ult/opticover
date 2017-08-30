@@ -15,4 +15,4 @@ linksCross a b = link2segment a `segmentCross` link2segment b
 
 -- | Gets two portals as basis and direction of vector respectively
 portalVec :: Portal -> Portal -> Vec
-portalVec p1 p2 = pointVec (p1 ^. pCoord) (p2 ^. pCoord)
+portalVec p1 p2 = vecFromPoints (p1 ^. pCoord) (p2 ^. pCoord)
