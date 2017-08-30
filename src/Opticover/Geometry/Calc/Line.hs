@@ -49,6 +49,14 @@ lineCrossPoint l1 l2 = if
           vec2 = lineDirVec l2
       in vecPerpProduct vec1 vec2
 
+pointOnSegment :: Segment -> Point -> Bool
+pointOnSegment seg p =
+  let
+    (a, b) = unPair $ unSegment seg
+    perp = vecPerpProduct (vecFromPoints a b) (vecFromPoints a p)
+    res = (perp ~== 0) && pointInBox (segmentBorderBox seg) p
+  in res
+
 lineDirVec :: Line -> Vec
 lineDirVec l =
   let (a, b) = unPair $ unLine l

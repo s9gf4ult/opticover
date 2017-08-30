@@ -62,7 +62,7 @@ fieldSquare field =
     [a, b, c] = S.toList $ fieldPortals field
     vec1 = portalVec a b
     vec2 = portalVec a c
-  in vectorsSquare vec1 vec2
+  in vecSquare vec1 vec2
 
 liftFields
   :: Link
