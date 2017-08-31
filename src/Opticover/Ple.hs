@@ -13,7 +13,7 @@ import Data.List as L
 
 newtype Pair a = Pair
   { unPair :: (a, a)
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord, Show, Foldable)
 
 unordPair :: (Ord a) => a -> a -> Pair a
 unordPair a b =
@@ -22,7 +22,7 @@ unordPair a b =
 
 newtype Triple a = Triple
   { unTriple :: (a, a, a)
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord, Show, Foldable)
 
 unordTriple :: (Ord a) => a -> a -> a -> Triple a
 unordTriple a b c =

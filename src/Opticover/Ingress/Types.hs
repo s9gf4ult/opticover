@@ -1,4 +1,15 @@
-module Opticover.Ingress.Types where
+module Opticover.Ingress.Types
+  ( Portal(..)
+  , pCoord
+  , pName
+  , Link(..)
+  , link
+  , linkPortals
+  , Field(fieldLinks, fieldPortals)
+  , field
+  , LinksMap
+  )
+where
 
 import Control.Lens
 import Data.Map.Strict as M
@@ -28,19 +39,18 @@ linkPortals l =
   in S.fromList [a, b]
 
 -- | The field is unordered triple of links
-newtype Field = Field
-  { unField :: Triple Link
+data Field = Field
+  { fieldLinks   :: !(Triple Link)
+  , fieldPortals :: !(Triple Portal)
   } deriving (Eq, Ord, Show)
 
-field :: Link -> Link -> Link -> Field
-field a b c = Field $ unordTriple a b c
-
-fieldLinks :: Field -> [Link]
-fieldLinks f =
-  let (a, b, c) = unTriple $ unField f
-  in [a, b, c]
-
-fieldPortals :: Field -> Set Portal
-fieldPortals f = S.fromList $ fieldLinks f >>= (S.toList . linkPortals)
+-- | Smart constructor for field, the only way to create field with
+-- guaranteed properties
+field :: Link -> Link -> Link -> Maybe Field
+field a b c = do
+  [p1, p2, p3] <- pure $ S.toList $ S.unions $ fmap linkPortals [a, b, c]
+  return $ Field
+    { fieldLinks = unordTriple a b c
+    , fieldPortals = unordTriple p1 p2 p3 }
 
 type LinksMap = Map Portal [Link]

@@ -37,8 +37,12 @@ queryLinkablePortals me allPortals allLinks allFields =
           guard $ linksCross l $ link me portal
           return l
 
+-- | Returns Nothing if field is malformed
 portalUnderField :: Portal -> Field -> Bool
-portalUnderField = error "FIXME: Not implemented: portalUnderField"
+portalUnderField prt f =
+  let t = fieldToTriangle f
+      p = prt ^. pCoord
+  in pointInTriangle t p
 
 linksMap :: [Link] -> LinksMap
 linksMap ls = M.fromListWith (++) $ ls >>= toPairs
@@ -59,7 +63,7 @@ leftRightSplit l portals = L.partition leftPortal portals
 fieldSquare :: Field -> Double
 fieldSquare field =
   let
-    [a, b, c] = S.toList $ fieldPortals field
+    (a, b, c) = unTriple $ fieldPortals field
     vec1 = portalVec a b
     vec2 = portalVec a c
   in vecSquare vec1 vec2

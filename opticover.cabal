@@ -35,6 +35,7 @@ library
                      , lens
                      , text
   default-extensions:  DataKinds
+                     , DeriveFoldable
                      , FlexibleInstances
                      , KindSignatures
                      , LambdaCase
