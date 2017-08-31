@@ -18,8 +18,9 @@ linksCross a b = link2segment a `segmentCross` link2segment b
 portalVec :: Portal -> Portal -> Vec
 portalVec p1 p2 = vecFromPoints (p1 ^. pCoord) (p2 ^. pCoord)
 
-fieldToTriangle :: Field -> Maybe Triangle
-fieldToTriangle f = do
-  [a, b, c] <- pure $ fieldPortals f ^.. folded . pCoord
-  let t = Triangle $ unordTriple a b c
-  return t
+fieldToTriangle :: Field -> Triangle
+fieldToTriangle f =
+  let
+    (a, b, c) = unTriple $ fieldPortals f
+    t = Triangle $ unordTriple (a ^. pCoord) (b ^. pCoord) (c ^. pCoord)
+  in t

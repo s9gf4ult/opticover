@@ -88,7 +88,7 @@ liftFields l allLinks =
     toField :: Portal -> Field
     toField p = fromMaybe (error "Strange shit") $ do
       [a, b] <- M.lookup p connectedLinks
-      return $ Field $ unordTriple l a b
+      field l a b
     getMaxField portals = F.toList $ listToMaybe $ sortBy maxSquare
       $ fmap toField portals
   in getMaxField lefts ++ getMaxField rights
