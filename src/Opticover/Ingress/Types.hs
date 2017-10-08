@@ -7,17 +7,19 @@ module Opticover.Ingress.Types
   , linkPortals
   , Field(fieldLinks, fieldPortals)
   , field
+  , Game
+  , newGame
+  , createLink
   , LinksMap
   )
 where
 
-import Control.Lens
-import Control.Monad
 import Data.List.NonEmpty as NE
 import Data.Map.Strict as M
 import Data.Set as S
 import Data.Text as T
 import Opticover.Geometry
+import Opticover.Import
 import Opticover.Ple
 
 data Portal = Portal
@@ -64,15 +66,20 @@ data LinkError
   | UnderField Portal
   deriving (Eq, Ord, Show)
 
+data FieldError
+
 data Game = Game
   { _gamePortals :: [Portal]
   , _gameLinks   :: [Link]
   , _gameFields  :: [Field]
   } deriving (Eq, Ord, Show)
 
+makeLenses ''Game
+
 data GameError
   = NoPortal Portal
-  | NotLinkcable Portal Portal LinkError
+  | NotLinkable LinkError
+  | NotFieldable FieldError
 
 newGame :: [Portal] -> Game
 newGame portals = Game
@@ -81,12 +88,18 @@ newGame portals = Game
   , _gameFields  = []
   }
 
--- | Creates new link and fields if there
+-- | Creates new link and fields if there. If can not establish link
+-- then return Left
 createLink :: Portal -> Portal -> Game -> Either GameError Game
 createLink pFrom pTo game = do
-  havePortal pFrom
-  havePortal pTo
+  link <- over _Left NotLinkable $ establishLink game pFrom pTo
+  (f1, f2) <- over _Left NotFieldable $ liftField game link
+  return $ game
+    & gameLinks %~ (link:)
+    & gameFields %~ ((catMaybes [f1, f2]) ++)
 
-  where
-    havePortal portal = do
-      unless (elem portal $ gamePortals game) $ throwError $ NoPortal portal
+establishLink :: Game -> Portal -> Portal -> Either LinkError Link
+establishLink = error "Not implemented: establishLink"
+
+liftField :: Game -> Link -> Either FieldError (Maybe Field, Maybe Field)
+liftField = error "Not implemented: liftField"
