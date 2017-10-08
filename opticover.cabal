@@ -26,6 +26,7 @@ library
                      , Opticover.Geometry.Types
                      , Opticover.Ingress
                      , Opticover.Ingress.Calc
+                     , Opticover.Ingress.Optimize
                      , Opticover.Ingress.Query
                      , Opticover.Ingress.Types
                      , Opticover.Ple

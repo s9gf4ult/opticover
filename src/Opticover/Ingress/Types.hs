@@ -12,6 +12,8 @@ module Opticover.Ingress.Types
 where
 
 import Control.Lens
+import Control.Monad
+import Data.List.NonEmpty as NE
 import Data.Map.Strict as M
 import Data.Set as S
 import Data.Text as T
@@ -54,3 +56,37 @@ field a b c = do
     , fieldPortals = unordTriple p1 p2 p3 }
 
 type LinksMap = Map Portal [Link]
+
+data LinkError
+  = AlreadyLinked Portal Portal
+  | ExceededOutLinks Portal
+  | HaveCross (NonEmpty Link)
+  | UnderField Portal
+  deriving (Eq, Ord, Show)
+
+data Game = Game
+  { _gamePortals :: [Portal]
+  , _gameLinks   :: [Link]
+  , _gameFields  :: [Field]
+  } deriving (Eq, Ord, Show)
+
+data GameError
+  = NoPortal Portal
+  | NotLinkcable Portal Portal LinkError
+
+newGame :: [Portal] -> Game
+newGame portals = Game
+  { _gamePortals = portals
+  , _gameLinks   = []
+  , _gameFields  = []
+  }
+
+-- | Creates new link and fields if there
+createLink :: Portal -> Portal -> Game -> Either GameError Game
+createLink pFrom pTo game = do
+  havePortal pFrom
+  havePortal pTo
+
+  where
+    havePortal portal = do
+      unless (elem portal $ gamePortals game) $ throwError $ NoPortal portal

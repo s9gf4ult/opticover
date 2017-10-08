@@ -3,5 +3,6 @@ module Opticover.Ingress
   ) where
 
 import Opticover.Ingress.Calc as X
+import Opticover.Ingress.Optimize as X
 import Opticover.Ingress.Query as X
 import Opticover.Ingress.Types as X
