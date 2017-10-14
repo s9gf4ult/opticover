@@ -2,7 +2,5 @@ module Opticover.Ingress
   ( module X
   ) where
 
-import Opticover.Ingress.Calc as X
+import Opticover.Ingress.Game as X
 import Opticover.Ingress.Optimize as X
-import Opticover.Ingress.Query as X
-import Opticover.Ingress.Types as X

@@ -1,16 +1,18 @@
-module Opticover.Ingress.Types
-  ( Portal(..)
+module Opticover.Ingress.Game.Types
+  ( -- * Portals
+    Portal(..)
   , pCoord
   , pName
-  , Link(..)
+    -- * Links
+  , Link(unLink)
   , link
   , linkPortals
+    -- * Fields
   , Field(fieldLinks, fieldPortals)
   , field
-  , Game
+    -- * Game
+  , Game(gamePortals, gameLinks, gameFields)
   , newGame
-  -- , createLink
-  , LinksMap
   )
 where
 
@@ -49,7 +51,8 @@ data Field = Field
   } deriving (Eq, Ord, Show)
 
 -- | Smart constructor for field, the only way to create field with
--- guaranteed properties
+-- guaranteed properties. Returns Nothing if three links have more or
+-- less than three common portals
 field :: Link -> Link -> Link -> Maybe Field
 field a b c = do
   [p1, p2, p3] <- pure $ S.toList $ S.unions $ fmap linkPortals [a, b, c]
@@ -57,36 +60,33 @@ field a b c = do
     { fieldLinks = unordTriple a b c
     , fieldPortals = unordTriple p1 p2 p3 }
 
-type LinksMap = Map Portal [Link]
-
-data LinkError
-  = AlreadyLinked Portal Portal
-  | ExceededOutLinks Portal
-  | HaveCross (NonEmpty Link)
-  | UnderField Portal
-  deriving (Eq, Ord, Show)
-
-data FieldError
-
-data GameError
-  = NoPortal Portal
-  | NotLinkable LinkError
-  | NotFieldable FieldError
-
 data Game = Game
-  { _gamePortals :: [Portal]
-  , _gameLinks   :: [Link]
-  , _gameFields  :: [Field]
+  { gamePortals :: [Portal]
+  , gameLinks   :: [Link]
+  , gameFields  :: [Field]
   } deriving (Eq, Ord, Show)
 
-makeLenses ''Game
-
+-- | New game has no links nor fields.
 newGame :: [Portal] -> Game
 newGame portals = Game
-  { _gamePortals = portals
-  , _gameLinks   = []
-  , _gameFields  = []
+  { gamePortals = portals
+  , gameLinks   = []
+  , gameFields  = []
   }
+
+-- data LinkError
+--   = AlreadyLinked Portal Portal
+--   | ExceededOutLinks Portal
+--   | HaveCross (NonEmpty Link)
+--   | UnderField Portal
+--   deriving (Eq, Ord, Show)
+
+-- data FieldError
+
+-- data GameError
+--   = NoPortal Portal
+--   | NotLinkable LinkError
+--   | NotFieldable FieldError
 
 -- -- | Creates new link and fields if there. If can not establish link
 -- -- then return Left
@@ -97,11 +97,3 @@ newGame portals = Game
 --   return $ game
 --     & gameLinks %~ (link:)
 --     & gameFields %~ ((catMaybes [f1, f2]) ++)
-
--- | Establish link to portal and create links and fields if
--- possible. Not checks linkability.
-establishLink :: Game -> Portal -> Portal -> Game
-establishLink = error "Not implemented: establishLink"
-
-liftField :: Game -> Link -> Either FieldError (Maybe Field, Maybe Field)
-liftField = error "Not implemented: liftField"

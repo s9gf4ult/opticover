@@ -25,10 +25,13 @@ library
                      , Opticover.Geometry.Calc.Vec
                      , Opticover.Geometry.Types
                      , Opticover.Ingress
-                     , Opticover.Ingress.Calc
+                     , Opticover.Ingress.Game
+                     , Opticover.Ingress.Game.Calc
+                     , Opticover.Ingress.Game.Query
+                     , Opticover.Ingress.Game.Types
+                     , Opticover.Ingress.Game.Unsafe
                      , Opticover.Ingress.Optimize
-                     , Opticover.Ingress.Query
-                     , Opticover.Ingress.Types
+                     -- , Opticover.Ingress.Query
                      , Opticover.Ple
   build-depends:       base >= 4.7 && < 5
                      , containers

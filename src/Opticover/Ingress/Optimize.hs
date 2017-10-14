@@ -1,7 +1,7 @@
 module Opticover.Ingress.Optimize where
 
 import Opticover.Import
-import Opticover.Ingress.Types
+import Opticover.Ingress.Game
 
 
 data GameAction = LinkPortals Portal Portal

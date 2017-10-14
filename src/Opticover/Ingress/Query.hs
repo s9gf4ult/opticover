@@ -8,9 +8,10 @@ import Data.Map.Strict as M
 import Data.Maybe
 import Data.Set as S
 import Opticover.Geometry
-import Opticover.Ingress.Calc
 import Opticover.Ingress.Types
 import Opticover.Ple
+
+type LinksMap = Map Portal [Link]
 
 queryLinkablePortals
   :: Portal
@@ -36,13 +37,6 @@ queryLinkablePortals me allPortals allLinks allFields =
           l <- allLinks
           guard $ linksCross l $ link me portal
           return l
-
--- | Returns Nothing if field is malformed
-portalUnderField :: Portal -> Field -> Bool
-portalUnderField prt f =
-  let t = fieldToTriangle f
-      p = prt ^. pCoord
-  in pointInTriangle t p
 
 linksMap :: [Link] -> LinksMap
 linksMap ls = M.fromListWith (++) $ ls >>= toPairs
