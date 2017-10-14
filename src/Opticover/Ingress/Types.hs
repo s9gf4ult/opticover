@@ -9,7 +9,7 @@ module Opticover.Ingress.Types
   , field
   , Game
   , newGame
-  , createLink
+  -- , createLink
   , LinksMap
   )
 where
@@ -68,6 +68,11 @@ data LinkError
 
 data FieldError
 
+data GameError
+  = NoPortal Portal
+  | NotLinkable LinkError
+  | NotFieldable FieldError
+
 data Game = Game
   { _gamePortals :: [Portal]
   , _gameLinks   :: [Link]
@@ -76,11 +81,6 @@ data Game = Game
 
 makeLenses ''Game
 
-data GameError
-  = NoPortal Portal
-  | NotLinkable LinkError
-  | NotFieldable FieldError
-
 newGame :: [Portal] -> Game
 newGame portals = Game
   { _gamePortals = portals
@@ -88,17 +88,19 @@ newGame portals = Game
   , _gameFields  = []
   }
 
--- | Creates new link and fields if there. If can not establish link
--- then return Left
-createLink :: Portal -> Portal -> Game -> Either GameError Game
-createLink pFrom pTo game = do
-  link <- over _Left NotLinkable $ establishLink game pFrom pTo
-  (f1, f2) <- over _Left NotFieldable $ liftField game link
-  return $ game
-    & gameLinks %~ (link:)
-    & gameFields %~ ((catMaybes [f1, f2]) ++)
+-- -- | Creates new link and fields if there. If can not establish link
+-- -- then return Left
+-- createLink :: Portal -> Portal -> Game -> Either GameError Game
+-- createLink pFrom pTo game = do
+--   link <- over _Left NotLinkable $ establishLink game pFrom pTo
+--   (f1, f2) <- over _Left NotFieldable $ liftField game link
+--   return $ game
+--     & gameLinks %~ (link:)
+--     & gameFields %~ ((catMaybes [f1, f2]) ++)
 
-establishLink :: Game -> Portal -> Portal -> Either LinkError Link
+-- | Establish link to portal and create links and fields if
+-- possible. Not checks linkability.
+establishLink :: Game -> Portal -> Portal -> Game
 establishLink = error "Not implemented: establishLink"
 
 liftField :: Game -> Link -> Either FieldError (Maybe Field, Maybe Field)
