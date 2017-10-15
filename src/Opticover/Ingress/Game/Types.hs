@@ -4,8 +4,9 @@ module Opticover.Ingress.Game.Types
   , pCoord
   , pName
     -- * Links
-  , Link(unLink)
-  , link
+  , Link(..)
+  , linkPortalFrom
+  , linkPortalTo
   , linkPortals
     -- * Fields
   , Field(fieldLinks, fieldPortals)
@@ -13,6 +14,8 @@ module Opticover.Ingress.Game.Types
     -- * Game
   , Game(gamePortals, gameLinks, gameFields)
   , newGame
+  , addGameLink
+  , addGameFields
   )
 where
 
@@ -31,17 +34,19 @@ data Portal = Portal
 
 makeLenses ''Portal
 
--- | The link is unordered pair of portals
-newtype Link = Link
-  { unLink :: Pair Portal
+-- | The link is an ordered pair of porals. First portal is portal the
+-- link was established from, and second is portal the link
+-- established to.
+data Link = Link
+  { _linkPortalFrom :: !Portal
+  , _linkPortalTo   :: !Portal
   } deriving (Eq, Ord, Show)
 
-link :: Portal -> Portal -> Link
-link a b = Link $ unordPair a b
+makeLenses ''Link
 
 linkPortals :: Link -> Set Portal
 linkPortals l =
-  let (a, b) = unPair $ unLink l
+  let Link a b = l
   in S.fromList [a, b]
 
 -- | The field is unordered triple of links
@@ -61,39 +66,23 @@ field a b c = do
     , fieldPortals = unordTriple p1 p2 p3 }
 
 data Game = Game
-  { gamePortals :: [Portal]
-  , gameLinks   :: [Link]
-  , gameFields  :: [Field]
+  { gamePortals :: !(Set Portal)
+  , gameLinks   :: !(Set Link)
+  , gameFields  :: !(Set Field)
   } deriving (Eq, Ord, Show)
 
 -- | New game has no links nor fields.
-newGame :: [Portal] -> Game
+newGame :: Set Portal -> Game
 newGame portals = Game
   { gamePortals = portals
-  , gameLinks   = []
-  , gameFields  = []
+  , gameLinks   = S.empty
+  , gameFields  = S.empty
   }
 
--- data LinkError
---   = AlreadyLinked Portal Portal
---   | ExceededOutLinks Portal
---   | HaveCross (NonEmpty Link)
---   | UnderField Portal
---   deriving (Eq, Ord, Show)
+addGameLink :: Set Link -> Game -> Game
+addGameLink links game = game
+  { gameLinks = S.union links $ gameLinks game }
 
--- data FieldError
-
--- data GameError
---   = NoPortal Portal
---   | NotLinkable LinkError
---   | NotFieldable FieldError
-
--- -- | Creates new link and fields if there. If can not establish link
--- -- then return Left
--- createLink :: Portal -> Portal -> Game -> Either GameError Game
--- createLink pFrom pTo game = do
---   link <- over _Left NotLinkable $ establishLink game pFrom pTo
---   (f1, f2) <- over _Left NotFieldable $ liftField game link
---   return $ game
---     & gameLinks %~ (link:)
---     & gameFields %~ ((catMaybes [f1, f2]) ++)
+addGameFields :: Set Field -> Game -> Game
+addGameFields fields game = game
+  { gameFields = S.union fields $ gameFields game }

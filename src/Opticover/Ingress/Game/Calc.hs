@@ -17,7 +17,7 @@ import Opticover.Ple
 
 link2segment :: Link -> Segment
 link2segment l =
-  let (p1, p2) = unPair $ unLink l
+  let Link p1 p2 = l
   in Segment $ unordPair (p1 ^. pCoord) (p2 ^. pCoord)
 
 -- | Gets two portals as basis and direction of vector respectively

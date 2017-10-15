@@ -1,6 +1,8 @@
 module Opticover.Ingress.Game.Query where
 
 import Data.List as L
+import Data.Map.Strict as M
+import Data.Set as S
 import Opticover.Import
 import Opticover.Ingress.Game.Calc
 import Opticover.Ingress.Game.Types
@@ -9,16 +11,22 @@ import Opticover.Ingress.Game.Types
 -- one.
 queryLinkablePortals :: Game -> Portal -> [Portal]
 queryLinkablePortals game me = do
-  case L.any (portalUnderField me) (gameFields game) of
+  let
+    allPortals = S.toList $ gamePortals game
+    allLinks = S.toList $ gameLinks game
+  case L.any (portalUnderField me) $ S.toList $ gameFields game of
     False -> []
     True -> do
-      portal <- gamePortals game
+      portal <- allPortals
       guard $ notLinked portal
       guard $ noCross portal
       return portal
       where
-        notLinked portal = link me portal `notElem` (gameLinks game)
+        notLinked portal =
+          let l1NotMember = S.notMember (Link me portal) $ gameLinks game
+              l2NotMember = S.notMember (Link portal me) $ gameLinks game
+          in l1NotMember && l2NotMember
         noCross portal = L.null $ do
-          l <- gameLinks game
-          guard $ linksCross l $ link me portal
+          l <- allLinks
+          guard $ linksCross l $ Link me portal
           return l
